@@ -1,0 +1,15 @@
+# registry-pv.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: registry-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/k3s/registry"
