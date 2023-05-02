@@ -2,8 +2,8 @@
 ---
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
-  labels: 
+metadata:
+  labels:
     app: worker
   name: worker
 spec:
@@ -15,4 +15,11 @@ spec:
     metadata:
       labels:
         app: worker
-    spec: 
+    spec:
+      containers:
+      - image: dockersamples/examplevotingapp_worker
+        name: worker-e2e
+        resources:
+          limits:
+            memory: 50Mi
+            cpu: 50m
