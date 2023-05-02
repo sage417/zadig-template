@@ -2,4 +2,6 @@ mirrors:
   "docker.io": 
     endpoint:
       - "https://registry-1.docker.io"
-configs: 
+  "registry.local"
+    endpoint:
+      - "http://registry.local:5000"
