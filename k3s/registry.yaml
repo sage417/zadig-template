@@ -1,15 +1,109 @@
+---
 # registry-pv.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: registry-pv
+  name: docker-registry-pv
   labels:
     type: local
 spec:
   storageClassName: manual
   capacity:
-    storage: 20Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/data/k3s/registry"
+    path: "/mnt/docker-registry/data"
+---
+# registry-pvc.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: docker-registry-pvc
+  namespace: docker-registry
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: docker-registry-pv
+---
+# registry-deploy.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: docker-registry-deployment
+  namespace: docker-registry
+  labels:
+    app: docker-registry
+spec:
+  replicas: 1            
+  selector:
+    matchLabels:
+      app: docker-registry 
+  template:
+    metadata:
+      labels:
+        app: docker-registry
+        name: docker-registry
+    spec:
+      containers:
+        - image: arm64v8/registry:2
+          name: docker-registry
+          env: 
+#             - name: REGISTRY_AUTH
+#               value: htpasswd
+#             - name: REGISTRY_AUTH_HTPASSWD_REALM
+#               value: Registry Realm
+#             - name: REGISTRY_AUTH_HTPASSWD_PATH
+#               value: /auth/htpasswd
+              - name: REGISTRY_STORAGE_DELETE_ENABLED
+                value: "true"
+          volumeMounts:
+            - name: docker-registry-persistent-storage
+              mountPath: /var/lib/registry
+          ports:
+            - name: registry-port
+              containerPort: 5000              
+      volumes:
+        - name: docker-registry-persistent-storage
+          persistentVolumeClaim:
+            claimName: docker-registry-pvc
+---
+# registry-svc.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-registry-service
+  namespace: docker-registry
+spec:
+  selector:
+    app: docker-registry  
+  ports:
+    - name: registry-port
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+
+---
+# registry-ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: registry-ingress
+  annotations:
+    kubernetes.io/ingress.class: traefik
+spec:
+  rules:
+  - host: registry.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-registry-service
+            port:
+              number: 5000
