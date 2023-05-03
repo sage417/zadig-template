@@ -17,7 +17,7 @@ spec:
         app: worker
     spec:
       containers:
-      - image: register.local/examplevotingapp_worker
+      - image: register.local/pooi-workflow
         name: worker-e2e
         resources:
           limits:
