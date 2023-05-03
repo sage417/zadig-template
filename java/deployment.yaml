@@ -17,9 +17,9 @@ spec:
         app: worker
     spec:
       containers:
-      - image: dockersamples/examplevotingapp_worker
+      - image: register.local/examplevotingapp_worker
         name: worker-e2e
         resources:
           limits:
-            memory: 50Mi
+            memory: 256Mi
             cpu: 50m
