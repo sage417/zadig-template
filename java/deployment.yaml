@@ -17,7 +17,7 @@ spec:
         app: worker
     spec:
       containers:
-      - image: registry.local/docker-registry/pooi-workflow
+      - image: registry.lan/docker-registry/pooi-workflow
         name: pooi-workflow
         resources:
           limits:
