@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - image: registry.local/docker-registry/pooi-workflow
-        name: worker-e2e
+        name: pooi-workflow
         resources:
           limits:
             memory: 256Mi
