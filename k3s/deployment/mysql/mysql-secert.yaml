@@ -1,0 +1,8 @@
+# secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysql-secret
+type: Opaque
+data:
+  password:   # encoded base64 password
