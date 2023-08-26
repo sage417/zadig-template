@@ -44,11 +44,11 @@ spec:
       - name: mysql
         image: arm64v8/mysql:8.1
         env:
-          - name: MYSQL_ROOT_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: mysql-secret
-                key: password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: password
         ports:
         - name: mysql
           containerPort: 3306
