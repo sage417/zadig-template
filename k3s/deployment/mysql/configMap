@@ -1,0 +1,49 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: mysql
+  namespace: mysql
+  uid: 031f783a-fe33-453f-b060-0cc26e8e6bc0
+  resourceVersion: '1372917'
+  creationTimestamp: '2023-08-16T15:14:49Z'
+  labels:
+    app: mysql
+    app.kubernetes.io/name: mysql
+  managedFields:
+    - manager: dashboard
+      operation: Update
+      apiVersion: v1
+      time: '2023-08-26T07:55:50Z'
+      fieldsType: FieldsV1
+      fieldsV1:
+        f:data:
+          .: {}
+          f:primary.cnf: {}
+          f:replica.cnf: {}
+        f:metadata:
+          f:labels:
+            .: {}
+            f:app: {}
+            f:app.kubernetes.io/name: {}
+data:
+  primary.cnf: |
+    # 仅在主服务器上应用此配置
+    [mysqld]
+
+    skip-name-resolve=1
+
+    lower_case_table_names=1
+    max_connections=1000
+
+    log-bin
+    max_binlog_size=5G
+  replica.cnf: |
+    # 仅在副本服务器上应用此配置
+    [mysqld]
+
+    skip-name-resolve=1
+
+    lower_case_table_names=1
+    max_connections=5000
+
+    super-read-only    
