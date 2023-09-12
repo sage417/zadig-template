@@ -88,18 +88,20 @@ spec:
         livenessProbe:
           exec:
             command: ["mysqladmin", "ping"]
-          initialDelaySeconds: 30
+          initialDelaySeconds: 60
           periodSeconds: 5
           timeoutSeconds: 2
         readinessProbe:
           exec:
             # 检查我们是否可以通过 TCP 执行查询（skip-networking 是关闭的）。
             command: ["mysql", "-h", "127.0.0.1", "-e", "SELECT 1"]
-          initialDelaySeconds: 5
+          initialDelaySeconds: 30
           periodSeconds: 2
           timeoutSeconds: 1
       - name: xtrabackup
         image: bitnami/percona-xtrabackup:8.0.34-29
+        securityContext:
+          runAsUser: 0
         ports:
         - name: xtrabackup
           containerPort: 3307
@@ -141,7 +143,7 @@ spec:
             # 如果容器重新启动，最多尝试一次。
             mv change_master_to.sql.in change_master_to.sql.orig
           fi
-
+          install_packages ncat
           # 当对等点请求时，启动服务器发送备份。
           exec ncat --listen --keep-open --send-only --max-conns=1 3307 -c \
             "xtrabackup --backup --slave-info --stream=xbstream --host=127.0.0.1 --user=root"          
