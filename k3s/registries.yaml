@@ -2,6 +2,6 @@ mirrors:
   "docker.io": 
     endpoint:
       - "https://registry-1.docker.io"
-  "registry.local"
+  "registry.ai":
     endpoint:
-      - "http://registry.local"
+      - "http://registry.ai"
